@@ -115,7 +115,7 @@
             const userWord = document.getElementById('userWord').value.trim();
             if (!userWord) return;
             
-            const response = await fetch('https://glosario-backend.onrender.com/generate-definition', {
+            const response = await fetch('https://back-end-w029.onrender.com/generate-definition', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ word: userWord })
