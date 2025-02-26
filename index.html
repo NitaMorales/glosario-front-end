@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glosario Interactivo</title>
+    <style>
+        body {
+            font-family: "Courier New", monospace;
+            text-align: center;
+            margin: 20px;
+            background-color: white;
+            color: black;
+        }
+        .term-btn {
+            margin: 5px;
+            padding: 10px 15px;
+            border: 1px solid black;
+            background-color: white;
+            color: black;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+        }
+        .term-btn:hover {
+            background-color: black;
+            color: white;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+        .definition-section {
+            padding: 10px 0;
+            border-bottom: 1px solid black;
+        }
+        #custom-word {
+            margin-top: 20px;
+        }
+        input, button {
+            font-family: "Courier New", monospace;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid black;
+            background-color: white;
+            color: black;
+        }
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Glosario de Términos</h1>
+    <div>
+        <button class="term-btn" onclick="showDefinition('estrella')">ESTRELLA</button>
+        <button class="term-btn" onclick="showDefinition('fantasma')">FANTASMA</button>
+        <button class="term-btn" onclick="showDefinition('boca')">BOCA</button>
+        <button class="term-btn" onclick="showDefinition('mar')">MAR</button>
+    </div>
+    <div id="result"></div>
+    
+    <div id="custom-word">
+        <h2>Ingresa tu propia palabra</h2>
+        <input type="text" id="userWord" placeholder="Escribe una palabra">
+        <button onclick="generateDefinition()">Generar</button>
+    </div>
+    
+    <script>
+        const definitions = {
+            estrella: {
+                significado: "Brillante; antigua herida que sigo hasta casa.",
+                vease: "Chispa; extraño; escritura; aguijón.",
+                origen: "Mito; historias de una madre; asuntos estáticos.",
+                suenos: "Alcanzado."
+            },
+            fantasma: {
+                significado: "Contorno del silencio.",
+                vease: "Sombra; fotografía; zumbido.",
+                origen: "Todas las cosas engendran sus propios opuestos.",
+                suenos: "Relleno, o carne."
+            },
+            boca: {
+                significado: "Una entrada o una salida.",
+                vease: "Pez: babosa; puño; bazofia; cualquier sinónimo de 'por favor'.",
+                origen: "¿Qué vino primero, la espada de la herida?",
+                suenos: "El mar."
+            },
+            mar: {
+                significado: "Frío antepasado; útero sin sangre.",
+                vease: "Canción del corazón; canción del enjambre; canción de la sal; devorador de canciones.",
+                origen: "N/A",
+                suenos: "N/A (no sueña, solo se imagina)."
+            }
+        };
+
+        function showDefinition(term) {
+            const termData = definitions[term];
+            document.getElementById('result').innerHTML = `
+                <div class='definition-section'><strong>${term.toUpperCase()}</strong></div>
+                <div class='definition-section'><strong>Significado:</strong> ${termData.significado}</div>
+                <div class='definition-section'><strong>Véase también:</strong> ${termData.vease}</div>
+                <div class='definition-section'><strong>Origen:</strong> ${termData.origen}</div>
+                <div class='definition-section'><strong>Sueños de ser:</strong> ${termData.suenos}</div>
+            `;
+        }
+
+        async function generateDefinition() {
+            const userWord = document.getElementById('userWord').value.trim();
+            if (!userWord) return;
+            
+            const response = await fetch('https://glosario-backend.onrender.com/generate-definition', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word: userWord })
+            });
+            
+            const result = await response.json();
+            document.getElementById('result').innerHTML = `
+                <div class='definition-section'><strong>${userWord.toUpperCase()}</strong></div>
+                <div class='definition-section'><strong>Significado:</strong> ${result.significado}</div>
+                <div class='definition-section'><strong>Véase también:</strong> ${result.vease}</div>
+                <div class='definition-section'><strong>Origen:</strong> ${result.origen}</div>
+                <div class='definition-section'><strong>Sueños de ser:</strong> ${result.suenos}</div>
+            `;
+        }
+    </script>
+</body>
+</html>
